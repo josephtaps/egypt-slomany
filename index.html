@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGYPT AI HUB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+        .title-glow {
+            /* Белое свечение для черных букв */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+        }
+        .game-btn {
+            border: 2px solid transparent;
+        }
+        .active-game-btn {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #818cf8;
+        }
+        .controls-hidden {
+            opacity: 0.4;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+        }
+        /* Улучшение для заголовка */
+        .flag-text {
+            display: inline-flex;
+            align-items: center;
+            line-height: 1;
+            direction: ltr; /* Заголовок EGYPT оставляем слева-направо */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-md bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-700">
+        
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-black tracking-wide flex flex-col items-center justify-center">
+                <div class="flag-text title-glow text-4xl">
+                    <span style="color: #CE1126;">EG</span><span style="color: #FFFFFF;">Y</span><span style="color: #000000;">PT</span>
+                </div>
+                <span class="text-indigo-400 font-bold text-xl mt-1">AI HUB</span>
+            </h1>
+        </div>
+        
+        <div class="mb-6 space-y-3">
+            <p class="text-gray-400 text-sm text-center">اكتب المعرّف (ID) بتاعك عشان تبدأ</p>
+            <input id="player-id-input" type="text" placeholder="رقم الايدي الخاص بيك" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-right">
+            <button id="connect-btn" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300">
+                اتصال
+            </button>
+            <p id="error-message" class="text-red-400 text-center text-sm pt-2 hidden"></p>
+            
+            <div id="action-buttons" class="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 hidden">
+                <a href="https://t.me/tarekfawbot" target="_blank" rel="noopener noreferrer" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 text-center flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-telegram" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.226.63.42.996.635.62.395.86.205.975-.258a1.06 1.06 0 0 0 .117-.517c.07-.414.159-1.185.159-1.185s.012-.11.117-.375c.05-.13.11-.253.185-.344l.016-.02c.16-.245.4-.557.4-.557s.078-.08.18-.184c.101-.104.18-.184.18-.184s.078-.08.114-.133c.038-.053.075-.104.11-.16B.03 8.35 15.22 4.223.865 3.312c-.775-.45-1.48-.18-1.76.193s-.255.935-.255.935l-3.328 3.328c-.283.283-.56.565-.56.565s-.182.173-.32.32c-.138.147-.286.295-.286.295l-1.05 1.05c-.282.282-.563.565-.563.565s-.182.173-.32.32c-.137.146-.285.294-.285.294l-2.078 2.078c-.282.282-.563.565-.563.565s-.182.173-.32.32c-.137.146-.285.294-.285.294l-2.078 2.078c-.282.282-.563.565-.563.565s-.182.173-.32.32c-.137.146-.285.294-.285.294L8.287 5.906z"/></svg>
+                    <span>تواصل معايا</span>
+                </a>
+                <a href="https://refpa39407.com/L?tag=d_5199245m_59685c_&site=5199245&ad=59685&r=registration" target="_blank" rel="noopener noreferrer" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 text-center flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-wallet2" viewBox="0 0 16 16"><path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v7a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5v-7A1.5 1.5 0 0 1 1.5 3H2V1.78a1.5 1.5 0 0 1 1.864-1.454l1.714.286a.5.5 0 0 1 .42.495V3h4.5V1.78a.5.5 0 0 1 .42-.495l1.714-.286zM1 4.5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5H1z"/><path d="M13 5.5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5z"/></svg>
+                    <span>شحن الرصيد</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="controls-hidden">
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold mb-3 text-gray-300">اختار اللعبة:</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="game-btn active-game-btn flex items-center justify-center gap-2 w-full py-3 px-2 bg-gray-700 rounded-lg font-semibold">
+                        ✈️ Aviator
+                    </button>
+                    <button class="game-btn flex items-center justify-center gap-2 w-full py-3 px-2 bg-gray-700 rounded-lg font-semibold">
+                        💣 Mines
+                    </button>
+                    <button class="game-btn flex items-center justify-center gap-2 w-full py-3 px-2 bg-gray-700 rounded-lg font-semibold">
+                        ⚽ Penalty
+                    </button>
+                    <button class="game-btn flex items-center justify-center gap-2 w-full py-3 px-2 bg-gray-700 rounded-lg font-semibold">
+                        🍏 Apple of Fortune
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-gray-900/50 min-h-[260px] rounded-lg p-6 flex items-center justify-center text-center border-2 border-dashed border-gray-600">
+                <p class="text-gray-500 text-lg font-medium">مستني الإشارة...</p>
+            </div>
+
+            <div class="mt-8">
+                <button class="w-full bg-indigo-600 text-white font-bold py-5 px-6 rounded-xl shadow-lg uppercase tracking-wider">
+                    الحصول على إشارة
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <p class="text-xs text-gray-500">
+                &copy; 2026 EGYPT AI HUB. جميع الحقوق محفوظة.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const playerIdInput = document.getElementById('player-id-input');
+        const connectBtn = document.getElementById('connect-btn');
+        const errorMessage = document.getElementById('error-message');
+        const actionButtons = document.getElementById('action-buttons');
+
+        connectBtn.addEventListener('click', () => {
+            const playerId = playerIdInput.value.trim();
+            const isNumeric = /^\d+$/.test(playerId);
+
+            // Скрываем сообщения и кнопки
+            errorMessage.classList.add('hidden');
+            actionButtons.classList.add('hidden');
+
+            // Проверка ID (10-13 цифр)
+            if (!isNumeric || playerId.length < 10 || playerId.length > 13) {
+                errorMessage.textContent = 'الايدي ده غلط. لازم يكون من 10 لـ 13 رقم.';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            connectBtn.disabled = true;
+            connectBtn.textContent = 'جاري التحقق...';
+
+            setTimeout(() => {
+                // Текст ошибки на египетском диалекте
+                errorMessage.textContent = 'رصيدك مش كفاية. لازم تشحن الحساب عشان تشغل البرنامج.';
+                errorMessage.classList.remove('hidden');
+                actionButtons.classList.remove('hidden');
+
+                connectBtn.disabled = false;
+                connectBtn.textContent = 'اتصال';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
