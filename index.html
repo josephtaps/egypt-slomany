@@ -3,142 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EGYPT AI HUB</title>
+    <title>EGYPT AI HUB - VIP Predictor</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Cairo', sans-serif;
+            background: radial-gradient(circle at top, #1e1b4b 0%, #090d16 60%, #000000 100%);
         }
-        .title-glow {
-            /* Белое свечение для черных букв */
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+        .glass-card {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(79, 70, 229, 0.15);
         }
-        .game-btn {
-            border: 2px solid transparent;
-        }
-        .active-game-btn {
-            background-color: #4f46e5;
-            color: white;
-            border-color: #818cf8;
-        }
-        .controls-hidden {
-            opacity: 0.4;
-            pointer-events: none;
-            transition: opacity 0.5s ease-in-out;
-        }
-        /* Улучшение для заголовка */
         .flag-text {
             display: inline-flex;
             align-items: center;
             line-height: 1;
-            direction: ltr; /* Заголовок EGYPT оставляем слева-направо */
+            direction: ltr;
+        }
+        .pt-glow {
+            color: #111827;
+            -webkit-text-stroke: 1.5px #eab308;
+            text-shadow: 0 0 12px rgba(234, 179, 8, 0.5);
+        }
+        .game-btn {
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: all 0.25s ease;
+        }
+        .active-game-btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border-color: #a78bfa;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+            transform: translateY(-2px);
+        }
+        .controls-locked {
+            opacity: 0.45;
+            filter: grayscale(40%);
+            pointer-events: none;
+            transition: all 0.4s ease;
+        }
+        /* Радар-анимация */
+        .radar-ring {
+            position: absolute;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            animation: ping-slow 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        @keyframes ping-slow {
+            75%, 100% { transform: scale(1.8); opacity: 0; }
+        }
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+            50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+        }
+        .btn-pulse {
+            animation: pulse-border 2s infinite;
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+<body class="text-white flex items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-md bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-700">
+    <div class="w-full max-w-md glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden">
         
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-black tracking-wide flex flex-col items-center justify-center">
-                <div class="flag-text title-glow text-4xl">
-                    <span style="color: #CE1126;">EG</span><span style="color: #FFFFFF;">Y</span><span style="color: #000000;">PT</span>
+        <!-- Верхний статус-бар (Онлайн + Пинг) -->
+        <div class="flex items-center justify-between bg-gray-900/80 border border-gray-800 rounded-full px-4 py-1.5 mb-5 text-xs">
+            <div class="flex items-center gap-2">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+                <span class="text-gray-300 font-semibold">سيرفر مصر: <span class="text-emerald-400">متصل</span></span>
+            </div>
+            <div class="text-gray-400">
+                نشط الآن: <span id="online-count" class="text-white font-bold">1,428</span>
+            </div>
+        </div>
+
+        <!-- Заголовок -->
+        <div class="text-center mb-5">
+            <h1 class="font-black tracking-wide flex flex-col items-center justify-center">
+                <div class="flag-text text-5xl tracking-tighter mb-1">
+                    <span style="color: #CE1126; text-shadow: 0 0 15px rgba(206,17,38,0.5);">EG</span><span style="color: #FFFFFF; text-shadow: 0 0 15px rgba(255,255,255,0.4);">Y</span><span class="pt-glow">PT</span>
                 </div>
-                <span class="text-indigo-400 font-bold text-xl mt-1">AI HUB</span>
+                <div class="inline-flex items-center gap-1.5 bg-indigo-950/80 border border-indigo-500/30 px-3 py-0.5 rounded-md mt-1">
+                    <span class="text-amber-400 text-xs">⚡</span>
+                    <span class="text-indigo-300 font-bold text-sm tracking-widest uppercase">AI PREDICTOR V4.2</span>
+                </div>
             </h1>
         </div>
+
+        <!-- Лента последних выигрышей (Социальное доказательство) -->
+        <div class="bg-indigo-950/30 border border-indigo-500/20 rounded-xl p-2.5 mb-6 flex items-center justify-between text-xs">
+            <span class="bg-indigo-600 text-white px-2 py-0.5 rounded font-bold">مباشر</span>
+            <p id="live-win-text" class="text-gray-300 truncate mx-2 font-medium">
+                اللاعب <span class="text-amber-400 font-bold">849***12</span> سحب <span class="text-emerald-400 font-bold">4,250 EGP</span> (Aviator)
+            </p>
+        </div>
         
-        <div class="mb-6 space-y-3">
-            <p class="text-gray-400 text-sm text-center">اكتب المعرّف (ID) بتاعك عشان تبدأ</p>
-            <input id="player-id-input" type="text" placeholder="رقم الايدي الخاص بيك" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-right">
-            <button id="connect-btn" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300">
-                اتصال
-            </button>
-            <p id="error-message" class="text-red-400 text-center text-sm pt-2 hidden"></p>
+        <!-- Блок авторизации по ID -->
+        <div class="mb-6 space-y-3 bg-gray-900/60 p-4 rounded-2xl border border-gray-800">
+            <label class="block text-gray-300 text-sm font-semibold text-center">
+                اكتب المعرّف (ID) بتاعك عشان تربط الحساب بالبرنامج
+            </label>
+            <div class="relative">
+                <input id="player-id-input" type="text" inputmode="numeric" placeholder="مثال: 1048593021" class="w-full bg-gray-800/90 border border-gray-600 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-right font-bold tracking-wider placeholder:font-normal placeholder:text-gray-500">
+            </div>
             
-            <div id="action-buttons" class="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 hidden">
-                <a href="https://t.me/tarekfawbot" target="_blank" rel="noopener noreferrer" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 text-center flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-telegram" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.226.63.42.996.635.62.395.86.205.975-.258a1.06 1.06 0 0 0 .117-.517c.07-.414.159-1.185.159-1.185s.012-.11.117-.375c.05-.13.11-.253.185-.344l.016-.02c.16-.245.4-.557.4-.557s.078-.08.18-.184c.101-.104.18-.184.18-.184s.078-.08.114-.133c.038-.053.075-.104.11-.16B.03 8.35 15.22 4.223.865 3.312c-.775-.45-1.48-.18-1.76.193s-.255.935-.255.935l-3.328 3.328c-.283.283-.56.565-.56.565s-.182.173-.32.32c-.138.147-.286.295-.286.295l-1.05 1.05c-.282.282-.563.565-.563.565s-.182.173-.32.32c-.137.146-.285.294-.285.294l-2.078 2.078c-.282.282-.563.565-.563.565s-.182.173-.32.32c-.137.146-.285.294-.285.294l-2.078 2.078c-.282.282-.563.565-.563.565s-.182.173-.32.32c-.137.146-.285.294-.285.294L8.287 5.906z"/></svg>
-                    <span>تواصل معايا</span>
+            <button id="connect-btn" class="w-full bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-black py-3.5 px-6 rounded-xl transition-all duration-300 shadow-lg shadow-emerald-900/40 flex items-center justify-center gap-2">
+                <span>اتصال وتفعيل البوت</span>
+            </button>
+
+            <!-- Прогресс-бар проверки (скрыт по умолчанию) -->
+            <div id="loading-box" class="hidden pt-2 space-y-2">
+                <div class="w-full bg-gray-800 rounded-full h-2 overflow-hidden">
+                    <div id="progress-bar" class="bg-indigo-500 h-2 rounded-full transition-all duration-300" style="width: 15%"></div>
+                </div>
+                <p id="loading-status" class="text-indigo-300 text-xs text-center font-semibold animate-pulse">جاري الاتصال بسيرفر اللعبة...</p>
+            </div>
+
+            <!-- Блок ошибки / Апсейла на депозит -->
+            <div id="error-box" class="hidden bg-red-950/60 border border-red-500/40 rounded-xl p-3.5 mt-3 text-center space-y-1">
+                <div class="text-red-400 font-bold text-sm flex items-center justify-center gap-1.5">
+                    <span>⚠️</span>
+                    <span id="error-title">تنبيه من السيستم</span>
+                </div>
+                <p id="error-message" class="text-gray-200 text-xs leading-relaxed font-medium"></p>
+            </div>
+            
+            <!-- Целевые кнопки (ТГ и Депозит) -->
+            <div id="action-buttons" class="pt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 hidden">
+                <a href="https://reffpa.com/L?tag=d_5434769m_18607c_&site=5434769&ad=18607&r=registration" target="_blank" rel="noopener noreferrer" class="btn-pulse w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black py-3.5 px-4 rounded-xl transition-all duration-300 text-center flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v7a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5v-7A1.5 1.5 0 0 1 1.5 3H2V1.78a1.5 1.5 0 0 1 1.864-1.454l1.714.286a.5.5 0 0 1 .42.495V3h4.5V1.78a.5.5 0 0 1 .42-.495l1.714-.286zM1 4.5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5H1z"/><path d="M13 5.5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5z"/></svg>
+                    <span>شحن الرصيد الآن</span>
                 </a>
-                <a href="https://refpa39407.com/L?tag=d_5199245m_59685c_&site=5199245&ad=59685&r=registration" target="_blank" rel="noopener noreferrer" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 text-center flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-wallet2" viewBox="0 0 16 16"><path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v7a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5v-7A1.5 1.5 0 0 1 1.5 3H2V1.78a1.5 1.5 0 0 1 1.864-1.454l1.714.286a.5.5 0 0 1 .42.495V3h4.5V1.78a.5.5 0 0 1 .42-.495l1.714-.286zM1 4.5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5H1z"/><path d="M13 5.5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5z"/></svg>
-                    <span>شحن الرصيد</span>
+                <a href="https://t.me/tarekfawbot" target="_blank" rel="noopener noreferrer" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl transition-colors duration-300 text-center flex items-center justify-center gap-2 shadow-lg shadow-sky-900/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.226.63.42.996.635.62.395.86.205.975-.258a1.06 1.06 0 0 0 .117-.517c.07-.414.159-1.185.159-1.185s.012-.11.117-.375c.05-.13.11-.253.185-.344l.016-.02c.16-.245.4-.557.4-.557s.078-.08.18-.184c.101-.104.18-.184.18-.184s.078-.08.114-.133c.038-.053.075-.104.11-.16z"/></svg>
+                    <span>تواصل مع طارق</span>
                 </a>
             </div>
         </div>
 
-        <div class="controls-hidden">
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold mb-3 text-gray-300">اختار اللعبة:</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <button class="game-btn active-game-btn flex items-center justify-center gap-2 w-full py-3 px-2 bg-gray-700 rounded-lg font-semibold">
-                        ✈️ Aviator
-                    </button>
-                    <button class="game-btn flex items-center justify-center gap-2 w-full py-3 px-2 bg-gray-700 rounded-lg font-semibold">
-                        💣 Mines
-                    </button>
-                    <button class="game-btn flex items-center justify-center gap-2 w-full py-3 px-2 bg-gray-700 rounded-lg font-semibold">
-                        ⚽ Penalty
-                    </button>
-                    <button class="game-btn flex items-center justify-center gap-2 w-full py-3 px-2 bg-gray-700 rounded-lg font-semibold">
-                        🍏 Apple of Fortune
-                    </button>
-                </div>
+        <!-- Выбор игры (Кликабельно для вовлечения!) -->
+        <div class="mb-5">
+            <div class="flex items-center justify-between mb-2.5">
+                <h2 class="text-sm font-bold text-gray-300">اختار اللعبة:</h2>
+                <span class="text-xs text-indigo-400 font-semibold">نسبة النجاح: 96.4%</span>
             </div>
-
-            <div class="bg-gray-900/50 min-h-[260px] rounded-lg p-6 flex items-center justify-center text-center border-2 border-dashed border-gray-600">
-                <p class="text-gray-500 text-lg font-medium">مستني الإشارة...</p>
-            </div>
-
-            <div class="mt-8">
-                <button class="w-full bg-indigo-600 text-white font-bold py-5 px-6 rounded-xl shadow-lg uppercase tracking-wider">
-                    الحصول على إشارة
+            <div class="grid grid-cols-2 gap-3" id="games-grid">
+                <button type="button" class="game-btn active-game-btn flex items-center justify-center gap-2 w-full py-3 px-3 bg-gray-800/80 rounded-xl font-bold text-sm">
+                    <span>✈️</span> <span>Aviator</span>
+                </button>
+                <button type="button" class="game-btn flex items-center justify-center gap-2 w-full py-3 px-3 bg-gray-800/80 rounded-xl font-bold text-sm text-gray-300 hover:bg-gray-700/80">
+                    <span>🍏</span> <span>Apple of Fortune</span>
+                </button>
+                <button type="button" class="game-btn flex items-center justify-center gap-2 w-full py-3 px-3 bg-gray-800/80 rounded-xl font-bold text-sm text-gray-300 hover:bg-gray-700/80">
+                    <span>💣</span> <span>Mines</span>
+                </button>
+                <button type="button" class="game-btn flex items-center justify-center gap-2 w-full py-3 px-3 bg-gray-800/80 rounded-xl font-bold text-sm text-gray-300 hover:bg-gray-700/80">
+                    <span>⚽</span> <span>Penalty</span>
                 </button>
             </div>
         </div>
 
-        <div class="mt-8 text-center">
-            <p class="text-xs text-gray-500">
+        <!-- Заблокированный экран радара и сигнала -->
+        <div class="controls-locked">
+            <div class="bg-gray-950/90 min-h-[200px] rounded-2xl p-6 flex flex-col items-center justify-center text-center border border-indigo-500/30 relative overflow-hidden">
+                <div class="radar-ring w-24 h-24"></div>
+                <div class="radar-ring w-36 h-36" style="animation-delay: 1s;"></div>
+                
+                <div class="z-10 bg-gray-900/90 p-3 rounded-full border border-gray-700 mb-3 shadow-inner">
+                    <span class="text-2xl">🔒</span>
+                </div>
+                <p class="z-10 text-gray-300 text-base font-bold">الرادار جاهز للتشغيل</p>
+                <p class="z-10 text-gray-500 text-xs mt-1">اربط الايدي بتاعك فوق عشان تظهر الإشارة هنا</p>
+            </div>
+
+            <div class="mt-5">
+                <button class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-black py-4 px-6 rounded-xl shadow-lg uppercase tracking-wider text-base">
+                    الحصول على إشارة الآن 🎯
+                </button>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div class="mt-6 text-center border-t border-gray-800/80 pt-4">
+            <p class="text-xs text-gray-500 font-medium">
                 &copy; 2026 EGYPT AI HUB. جميع الحقوق محفوظة.
             </p>
         </div>
     </div>
 
     <script>
+        // 1. Переключение кнопок игр (дает юзеру покликать)
+        const gameBtns = document.querySelectorAll('.game-btn');
+        gameBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                gameBtns.forEach(b => {
+                    b.classList.remove('active-game-btn');
+                    b.classList.add('text-gray-300');
+                });
+                btn.classList.add('active-game-btn');
+                btn.classList.remove('text-gray-300');
+            });
+        });
+
+        // 2. Имитация живого онлайна
+        const onlineCountEl = document.getElementById('online-count');
+        let currentOnline = 1428;
+        setInterval(() => {
+            const change = Math.floor(Math.random() * 11) - 5;
+            currentOnline = Math.max(1200, currentOnline + change);
+            onlineCountEl.textContent = currentOnline.toLocaleString();
+        }, 3500);
+
+        // 3. Имитация ленты выигрышей
+        const liveWinText = document.getElementById('live-win-text');
+        const games = ['Aviator', 'Apple of Fortune', 'Mines', 'Penalty'];
+        setInterval(() => {
+            const randomId = Math.floor(100 + Math.random() * 899) + '***' + Math.floor(10 + Math.random() * 89);
+            const randomWin = (Math.floor(Math.random() * 85) * 100 + 1200).toLocaleString();
+            const randomGame = games[Math.floor(Math.random() * games.length)];
+            liveWinText.innerHTML = `اللاعب <span class="text-amber-400 font-bold">${randomId}</span> سحب <span class="text-emerald-400 font-bold">${randomWin} EGP</span> (${randomGame})`;
+        }, 4500);
+
+        // 4. Логика проверки ID с многоступенчатым прогрессом
         const playerIdInput = document.getElementById('player-id-input');
         const connectBtn = document.getElementById('connect-btn');
+        const errorBox = document.getElementById('error-box');
         const errorMessage = document.getElementById('error-message');
         const actionButtons = document.getElementById('action-buttons');
+        const loadingBox = document.getElementById('loading-box');
+        const progressBar = document.getElementById('progress-bar');
+        const loadingStatus = document.getElementById('loading-status');
 
         connectBtn.addEventListener('click', () => {
             const playerId = playerIdInput.value.trim();
             const isNumeric = /^\d+$/.test(playerId);
 
-            // Скрываем сообщения и кнопки
-            errorMessage.classList.add('hidden');
+            errorBox.classList.add('hidden');
             actionButtons.classList.add('hidden');
 
-            // Проверка ID (10-13 цифр)
-            if (!isNumeric || playerId.length < 10 || playerId.length > 13) {
-                errorMessage.textContent = 'الايدي ده غلط. لازم يكون من 10 لـ 13 رقم.';
-                errorMessage.classList.remove('hidden');
+            // Проверка ID (9-13 цифр для СНГ/MENA аккаунтов 1xBet)
+            if (!isNumeric || playerId.length < 9 || playerId.length > 13) {
+                errorMessage.textContent = 'الايدي ده غلط يا بطل. لازم يكون أرقام بس (من 9 لـ 13 رقم).';
+                errorBox.classList.remove('hidden');
                 return;
             }
 
+            // Запуск анимации проверки
             connectBtn.disabled = true;
-            connectBtn.textContent = 'جاري التحقق...';
+            connectBtn.classList.add('opacity-60');
+            connectBtn.textContent = 'جاري الفحص...';
+            loadingBox.classList.remove('hidden');
+            progressBar.style.width = '25%';
+            loadingStatus.textContent = 'جاري الاتصال بسيرفر 1xBet...';
 
             setTimeout(() => {
-                // Текст ошибки на египетском диалекте
-                errorMessage.textContent = 'رصيدك مش كفاية. لازم تشحن الحساب عشان تشغل البرنامج.';
-                errorMessage.classList.remove('hidden');
+                progressBar.style.width = '65%';
+                loadingStatus.textContent = `تم العثور على الحساب (${playerId})! جاري فحص الرصيد...`;
+            }, 900);
+
+            setTimeout(() => {
+                progressBar.style.width = '100%';
+            }, 1800);
+
+            setTimeout(() => {
+                loadingBox.classList.add('hidden');
+                
+                // Текст дожима на египетском диалекте
+                errorMessage.innerHTML = 'تم ربط حسابك بنجاح، بس <b>رصيدك الحالي 0 ج.م</b>.<br>لازم تشحن حسابك عشان السيستم يفتحلك إشارات الذكاء الاصطناعي فوراً!';
+                errorBox.classList.remove('hidden');
                 actionButtons.classList.remove('hidden');
 
                 connectBtn.disabled = false;
-                connectBtn.textContent = 'اتصال';
-            }, 1500);
+                connectBtn.classList.remove('opacity-60');
+                connectBtn.textContent = 'تحديث حالة الرصيد 🔄';
+            }, 2200);
         });
     </script>
 </body>
